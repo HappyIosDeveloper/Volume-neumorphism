@@ -11,6 +11,7 @@
 		0B86EFE82A77A2BA00E6D298 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B86EFE72A77A2BA00E6D298 /* ContentView.swift */; };
 		0B86EFEA2A77A2BB00E6D298 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B86EFE92A77A2BB00E6D298 /* Assets.xcassets */; };
 		0B86EFED2A77A2BB00E6D298 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B86EFEC2A77A2BB00E6D298 /* Preview Assets.xcassets */; };
+		0B86EFF52A77F7C100E6D298 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B86EFF42A77F7C100E6D298 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		0B86EFE72A77A2BA00E6D298 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		0B86EFE92A77A2BB00E6D298 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0B86EFEC2A77A2BB00E6D298 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		0B86EFF42A77F7C100E6D298 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +53,7 @@
 		0B86EFE42A77A2BA00E6D298 /* Volume */ = {
 			isa = PBXGroup;
 			children = (
+				0B86EFF32A77F7AA00E6D298 /* Helpers */,
 				0B86EFE52A77A2BA00E6D298 /* VolumeApp.swift */,
 				0B86EFE72A77A2BA00E6D298 /* ContentView.swift */,
 				0B86EFE92A77A2BB00E6D298 /* Assets.xcassets */,
@@ -65,6 +68,14 @@
 				0B86EFEC2A77A2BB00E6D298 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		0B86EFF32A77F7AA00E6D298 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				0B86EFF42A77F7C100E6D298 /* Extensions.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,6 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B86EFE82A77A2BA00E6D298 /* ContentView.swift in Sources */,
+				0B86EFF52A77F7C100E6D298 /* Extensions.swift in Sources */,
 				0B86EFE62A77A2BA00E6D298 /* VolumeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
