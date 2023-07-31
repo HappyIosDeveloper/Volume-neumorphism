@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State var value: CGFloat = 200
+    
     var body: some View {
         VStack {
-            Volume(circleWidth: 250)
+            Volume(currentValue: $value, circleWidth: 250)
         }
         .padding()
+        .onChange(of: value) { newValue in
+            print("value: ", newValue)
+        }
     }
 }
 
@@ -22,13 +28,9 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-//  250     21.8        20        60
-// width   kerning  characters  ch size
-// the (20/100) * width = total | final - total / (chars * chSize) = space
-
-
 struct Volume: View {
     
+    @Binding var currentValue: CGFloat
     var circleWidth: CGFloat
     var minValue: Double = 0
     var maxValue: Double = 100
@@ -36,15 +38,35 @@ struct Volume: View {
     var maxText: String = "Max"
     var numberOfIndicators: Int = 10
     var indicatorSize: CGFloat = 17
+    @State private var angle: Double = 0
 
     var body: some View {
         ZStack {
             Indicators(radius: circleWidth)
             MinMaxTexts()
             CenterCircle()
-            IndicatorCircle()
+            IndicatorCircle(circleWidth: circleWidth)
+                .padding([.top, .trailing], circleWidth / 4)
+                .transformEffect(CGAffineTransform(translationX: -50, y: -50)
+                        .concatenating(CGAffineTransform(rotationAngle: CGFloat(angle * .pi / 180)))
+                        .concatenating(CGAffineTransform(translationX: 50, y: 50)))
         }
         .frame(width: circleWidth, height: circleWidth)
+        .gesture(DragGesture()
+            .onChanged { value in
+                withAnimation() {
+                    let value = value.translation.width * 2
+                    if (0...280) ~= value {
+                        angle = value
+                        currentValue = (value/maxValue) * 100
+                    } else {
+                        if (0...280) ~= angle {
+                            angle += (value / 100)
+                            currentValue = (angle/maxValue) * 100
+                        }
+                    }
+                }
+        })
     }
     
     struct Indicators: View {
@@ -69,7 +91,7 @@ struct Volume: View {
                     VStack {
                         Text(String(letter))
                             .font(Font(font))
-                            .foregroundColor(Color(uiColor: .lightGray))
+                            .foregroundColor(Color(uiColor: .lightGray.withAlphaComponent(0.5)))
                             .kerning(geKerning * 10)
                             .background(LetterWidthSize())
                             .onPreferenceChange(WidthLetterPreferenceKey.self, perform: { width in
@@ -118,7 +140,7 @@ struct Volume: View {
                     Spacer()
                     Text(maxText)
                 }
-                .foregroundColor(.gray)
+                .foregroundColor(Color(.lightGray.withAlphaComponent(0.7)))
                 .padding(.horizontal)
                 .padding(.horizontal)
             }
@@ -127,27 +149,49 @@ struct Volume: View {
     
     struct CenterCircle: View {
         
-        let gradient = Gradient(stops:
-                                    [.init(color: .white, location: 0.2),
-                                     .init(color: .white, location: 0.6),
-                                     .init(color: .gray, location: 0.8)
-                                    ])
+        let mainGradient = Gradient(stops: [
+            .init(color: .init(uiColor: #colorLiteral(red: 0.9273031354, green: 0.9446414709, blue: 0.9891976714, alpha: 1)), location: 0.2),
+            .init(color: .init(uiColor: #colorLiteral(red: 0.8507085443, green: 0.8666146398, blue: 0.9074911475, alpha: 1)), location: 0.8)
+        ])
+        let borderGradient = Gradient(stops: [
+            .init(color: .init(uiColor: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)), location: 0),
+            .init(color: .init(uiColor: #colorLiteral(red: 0.8993311524, green: 0.9161464572, blue: 0.959358871, alpha: 1)), location: 1)
+        ])
 
-        
         var body: some View {
             ZStack {
                 Circle()
-                    .fill(.ellipticalGradient(gradient, center: .center, startRadiusFraction: 0.1, endRadiusFraction: 0.6))
+                    .fill(.ellipticalGradient(borderGradient, center: .center, startRadiusFraction: 0, endRadiusFraction: 1))
+                    .padding(25)
+                Circle()
+                    .fill(.ellipticalGradient(mainGradient, center: .center, startRadiusFraction: 0.0, endRadiusFraction: 1))
                     .padding()
                     .padding()
             }
+            .padding()
+            .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 20)
+            .shadow(color: Color.white.opacity(0.7), radius: 10, x: 0, y: -5)
         }
     }
     
     struct IndicatorCircle: View {
+        var circleWidth: CGFloat
+        var size: CGFloat {
+            return circleWidth / 6
+        }
         var body: some View {
             ZStack {
+                Circle()
+                    .fill(Color(#colorLiteral(red: 0.9273031354, green: 0.9446414709, blue: 0.9891976714, alpha: 1)))
+                    .overlay(
+                        Circle()
+                            .stroke(Color(.lightGray), lineWidth: 5)
+                            .blur(radius: 4)
+                            .offset(x: 0, y: 6)
+                            .mask(Circle().fill(LinearGradient(colors: [.white], startPoint: .top, endPoint: .bottom)))
+                    )
             }
+            .frame(width: size, height: size)
         }
     }
 }
