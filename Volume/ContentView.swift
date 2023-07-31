@@ -17,7 +17,7 @@ struct ContentView: View {
         }
         .padding()
         .onChange(of: value) { newValue in
-            print("value: ", newValue)
+//            print("value: ", newValue)
         }
     }
 }
@@ -42,7 +42,7 @@ struct Volume: View {
 
     var body: some View {
         ZStack {
-            Indicators(radius: circleWidth)
+            Indicators(progress: $currentValue, radius: circleWidth)
             MinMaxTexts()
             CenterCircle()
             IndicatorCircle(circleWidth: circleWidth)
@@ -70,7 +70,8 @@ struct Volume: View {
     }
     
     struct Indicators: View {
-        var radius: Double
+        @Binding var progress: CGFloat
+        @State var radius: Double
         var font: UIFont = .systemFont(ofSize: 17)
         @State var letterWidths: [Int:Double] = [:]
         var numberOfIndicators: Int = 20
@@ -101,6 +102,7 @@ struct Volume: View {
                     }
                     .rotationEffect(fetchAngle(at: index))
                 }
+                ProgressView(radius: $progress)
             }
             .frame(width: radius, height: radius)
             .rotationEffect(.degrees(-145))
@@ -124,6 +126,22 @@ struct Volume: View {
             var body: some View {
                 GeometryReader { geometry in // using this to get the width of EACH letter
                     Color.clear.preference(key: WidthLetterPreferenceKey.self, value: geometry.size.width * 2)
+                }
+            }
+        }
+        
+        struct ProgressView: View {
+            @Binding var radius: CGFloat
+            var width: CGFloat = 40
+            var body: some View {
+                ZStack {
+                    Circle()
+                        .trim(from: 0, to: radius / 100) // < ----- conversion is wrong!
+                        .stroke(Color.green, lineWidth: width)
+                        .rotationEffect(.degrees(-120))
+                        .blur(radius: 10)
+//                        .blendMode(.color) // uncomment this
+                        .animation(.spring(), value: radius)
                 }
             }
         }
@@ -185,8 +203,8 @@ struct Volume: View {
                     .fill(Color(#colorLiteral(red: 0.9273031354, green: 0.9446414709, blue: 0.9891976714, alpha: 1)))
                     .overlay(
                         Circle()
-                            .stroke(Color(.lightGray), lineWidth: 5)
-                            .blur(radius: 4)
+                            .stroke(Color(.lightGray), lineWidth: 2)
+                            .blur(radius: 2)
                             .offset(x: 0, y: 6)
                             .mask(Circle().fill(LinearGradient(colors: [.white], startPoint: .top, endPoint: .bottom)))
                     )
