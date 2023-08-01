@@ -17,7 +17,7 @@ struct ContentView: View {
         }
         .padding()
         .onChange(of: value) { newValue in
-//            print("value: ", newValue)
+            print("value: ", newValue)
         }
     }
 }
@@ -39,22 +39,27 @@ struct Volume: View {
     var numberOfIndicators: Int = 10
     var indicatorSize: CGFloat = 17
     @State private var angle: Double = 0
+    @State private var scale: CGFloat = 1
 
     var body: some View {
         ZStack {
             Indicators(progress: $currentValue, radius: circleWidth)
             MinMaxTexts()
-            CenterCircle()
-            IndicatorCircle(circleWidth: circleWidth)
-                .padding([.top, .trailing], circleWidth / 4)
-                .transformEffect(CGAffineTransform(translationX: -50, y: -50)
+            Group {
+                CenterCircle()
+                IndicatorCircle(circleWidth: circleWidth)
+                    .padding([.top, .trailing], circleWidth / 4)
+                    .transformEffect(CGAffineTransform(translationX: -50, y: -50)
                         .concatenating(CGAffineTransform(rotationAngle: CGFloat(angle * .pi / 180)))
                         .concatenating(CGAffineTransform(translationX: 50, y: 50)))
+            }
+            .scaleEffect(scale)
         }
         .frame(width: circleWidth, height: circleWidth)
         .gesture(DragGesture()
             .onChanged { value in
                 withAnimation() {
+                    scale = 0.99
                     let value = value.translation.width * 2
                     if (0...280) ~= value {
                         angle = value
@@ -66,7 +71,12 @@ struct Volume: View {
                         }
                     }
                 }
-        })
+            } .onEnded({ _ in
+                withAnimation(.linear(duration: 0.3)) {
+                    scale = 1
+                }
+            })
+        )
     }
     
     struct Indicators: View {
@@ -136,11 +146,11 @@ struct Volume: View {
             var body: some View {
                 ZStack {
                     Circle()
-                        .trim(from: 0, to: radius / 100) // < ----- conversion is wrong!
+                        .trim(from: 0, to: radius / 360) // < ----- conversion is wrong!
                         .stroke(Color.green, lineWidth: width)
-                        .rotationEffect(.degrees(-120))
+                        .rotationEffect(.degrees(-90))
                         .blur(radius: 10)
-//                        .blendMode(.color) // uncomment this
+                        .blendMode(.color)
                         .animation(.spring(), value: radius)
                 }
             }
@@ -166,7 +176,6 @@ struct Volume: View {
     }
     
     struct CenterCircle: View {
-        
         let mainGradient = Gradient(stops: [
             .init(color: .init(uiColor: #colorLiteral(red: 0.9273031354, green: 0.9446414709, blue: 0.9891976714, alpha: 1)), location: 0.2),
             .init(color: .init(uiColor: #colorLiteral(red: 0.8507085443, green: 0.8666146398, blue: 0.9074911475, alpha: 1)), location: 0.8)
