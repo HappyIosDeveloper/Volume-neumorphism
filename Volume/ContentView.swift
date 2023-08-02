@@ -17,7 +17,7 @@ struct ContentView: View {
         }
         .padding()
         .onChange(of: value) { newValue in
-            print("value: ", newValue)
+//            print("value: ", newValue)
         }
     }
 }
@@ -58,17 +58,18 @@ struct Volume: View {
         .frame(width: circleWidth, height: circleWidth)
         .gesture(DragGesture()
             .onChanged { value in
-                withAnimation() {
+                withAnimation(.spring(response: 2)) {
                     scale = 0.99
-                    let value = value.translation.width * 2
-                    if (0...280) ~= value {
-                        angle = value
-                        currentValue = (value/maxValue) * 100
+                    var newValue = value.location.x
+                    if newValue > 140 { // passed from center
+                        newValue = max((value.location.y / 2) + value.location.x, newValue)
                     } else {
-                        if (0...280) ~= angle {
-                            angle += (value / 100)
-                            currentValue = (angle/maxValue) * 100
-                        }
+                        newValue = min((-value.location.y / 2) + value.location.x, newValue)
+                    }
+                    print("location: \(value.location) | newValue: \(newValue)")
+                    if (0...280) ~= newValue {
+                        angle = newValue
+                        currentValue = (angle/maxValue) * 100
                     }
                 }
             } .onEnded({ _ in
