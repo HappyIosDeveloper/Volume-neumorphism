@@ -14,6 +14,7 @@ struct ContentView: View {
     private let lightGradientColors = [.white, Color.gray.opacity(0.3)]
     private let darkGradientColors = [Color(.darkGray), .black]
     @Environment(\.colorScheme) private var colorScheme
+    @State private var lastValue = 0
     
     var body: some View {
         VStack {
@@ -25,7 +26,10 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Gradient(colors: colorScheme == .dark ? darkGradientColors : lightGradientColors))
         .onChange(of: value) { newValue in
-            print("value: ", newValue)
+            if Int(newValue) != lastValue {
+                self.lastValue = Int(newValue)
+                playThickSound()
+            }
         }
     }
 }
@@ -168,7 +172,7 @@ struct Volume: View {
             ZStack {
                 Group {
                     Circle() // shadow
-                        .trim(from: 0, to: radius / 360) // < ----- conversion is wrong!
+                        .trim(from: 0, to: radius / 130) // < ----- conversion is wrong!
                         .stroke(color.opacity(0.2), lineWidth: width)
                         .blur(radius: 20)
                 }
@@ -252,4 +256,10 @@ struct Volume: View {
             .frame(width: size, height: size)
         }
     }
+}
+
+import AVFoundation
+
+func playThickSound() {
+    AudioServicesPlayAlertSound(SystemSoundID(1104))
 }
