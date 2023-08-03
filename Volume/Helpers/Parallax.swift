@@ -43,28 +43,28 @@ class MotionManager: ObservableObject {
 
     }
     
-    private func setupParallax() {
-        if manager.isDeviceMotionAvailable {
-            manager.deviceMotionUpdateInterval = 0.05
-            manager.startDeviceMotionUpdates(to: .main) { (data, error) in
-                if let data = data {
-                    let rotation = sin(data.gravity.x) * -60
-                    let newVal = Float(rotation)
-                    //                    print(newVal)
-                    let angle:Float = newVal
-                    let alpha: Float = angle / 360
-                    let startPointX = powf(sinf(2 * Float.pi * ((alpha + 0.75) / 2)),2)
-                    let startPointY = powf(sinf(2 * Float.pi * ((alpha + 0) / 2)),2)
-                    let endPointX = powf(sinf(2 * Float.pi * ((alpha + 0.25) / 2)), 2)
-                    let endPointY = powf(sinf(2 * Float.pi * ((alpha + 0.5) / 2)), 2)
-                    DispatchQueue.main.async {
+//    private func setupParallax() {
+//        if manager.isDeviceMotionAvailable {
+//            manager.deviceMotionUpdateInterval = 0.05
+//            manager.startDeviceMotionUpdates(to: .main) { (data, error) in
+//                if let data = data {
+//                    let rotation = sin(data.gravity.x) * -60
+//                    let newVal = Float(rotation)
+//                    //                    print(newVal)
+//                    let angle:Float = newVal
+//                    let alpha: Float = angle / 360
+//                    let startPointX = powf(sinf(2 * Float.pi * ((alpha + 0.75) / 2)),2)
+//                    let startPointY = powf(sinf(2 * Float.pi * ((alpha + 0) / 2)),2)
+//                    let endPointX = powf(sinf(2 * Float.pi * ((alpha + 0.25) / 2)), 2)
+//                    let endPointY = powf(sinf(2 * Float.pi * ((alpha + 0.5) / 2)), 2)
+//                    DispatchQueue.main.async {
 //                        self.parallaxGradientLayer.endPoint = CGPoint(x: CGFloat(endPointX),y: CGFloat(endPointY))
 //                        self.parallaxGradientLayer.startPoint = CGPoint(x: CGFloat(startPointX), y: CGFloat(startPointY))
-                    }
-                }
-            }
-        }
-    }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 

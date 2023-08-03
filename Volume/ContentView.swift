@@ -9,15 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var value: CGFloat = 200
+    @State var value: CGFloat = 0
     
     private let lightGradientColors = [.white, Color.gray.opacity(0.3)]
     private let darkGradientColors = [Color(.darkGray), .black]
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        ZStack {
-            Volume(currentValue: $value, circleWidth: 250)
+        VStack {
+            Text(verbatim: Int(value).description)
+                .padding(.bottom, 30)
+                .animation(nil)
+            Volume(currentValue: $value, circleWidth: 250, maxValue: 100)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Gradient(colors: colorScheme == .dark ? darkGradientColors : lightGradientColors))
@@ -53,7 +56,7 @@ struct Volume: View {
             IndicatorsShadowView(radius: $currentValue, color: indicatorColor)
             Indicators(progress: $currentValue, radius: circleWidth, id: UUID().uuidString, color: indicatorColor)
             Group {
-                CenterCircle()
+                CenterCircle(rotation: $angle)
                 IndicatorCircle(circleWidth: circleWidth)
                     .padding([.top, .trailing], circleWidth / 4)
                     .transformEffect(CGAffineTransform(translationX: -50, y: -50)
@@ -82,7 +85,7 @@ struct Volume: View {
                     }
                     if (0...280) ~= newValue {
                         angle = newValue
-                        currentValue = (angle/maxValue) * 100
+                        currentValue = (angle/280) * 100
                     }
                 }
             } .onEnded({ _ in
@@ -195,6 +198,9 @@ struct Volume: View {
     }
     
     struct CenterCircle: View {
+        
+        @Binding var rotation: Double
+        
         let mainGradient = Gradient(stops: [
             .init(color: .init(uiColor: #colorLiteral(red: 0.9273031354, green: 0.9446414709, blue: 0.9891976714, alpha: 1)), location: 0.2),
             .init(color: .init(uiColor: #colorLiteral(red: 0.8507085443, green: 0.8666146398, blue: 0.9074911475, alpha: 1)), location: 0.8)
@@ -213,6 +219,12 @@ struct Volume: View {
                     .fill(.ellipticalGradient(mainGradient, center: .center, startRadiusFraction: 0.0, endRadiusFraction: 1))
                     .padding()
                     .padding()
+//                Image("knob")
+//                    .resizable()
+//                    .padding(20)
+//                    .rotationEffect(.degrees(rotation))
+//                    .animation(nil)
+//                    .opacity(0.1)
             }
             .padding()
             .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 20)
