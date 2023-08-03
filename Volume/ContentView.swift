@@ -11,11 +11,16 @@ struct ContentView: View {
     
     @State var value: CGFloat = 200
     
+    private let lightGradientColors = [.white, Color.gray.opacity(0.3)]
+    private let darkGradientColors = [Color(.darkGray), .black]
+    @Environment(\.colorScheme) private var colorScheme
+    
     var body: some View {
-        VStack {
+        ZStack {
             Volume(currentValue: $value, circleWidth: 250)
         }
-        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Gradient(colors: colorScheme == .dark ? darkGradientColors : lightGradientColors))
         .onChange(of: value) { newValue in
             print("value: ", newValue)
         }
@@ -41,11 +46,12 @@ struct Volume: View {
     var indicatorColor: Color = .green
     @State private var angle: Double = 0
     @State private var scale: CGFloat = 1
-
+    
     var body: some View {
         ZStack {
-            Indicators(progress: $currentValue, radius: circleWidth, color: indicatorColor)
             MinMaxTexts()
+            IndicatorsShadowView(radius: $currentValue, color: indicatorColor)
+            Indicators(progress: $currentValue, radius: circleWidth, id: UUID().uuidString, color: indicatorColor)
             Group {
                 CenterCircle()
                 IndicatorCircle(circleWidth: circleWidth)
@@ -55,6 +61,13 @@ struct Volume: View {
                         .concatenating(CGAffineTransform(translationX: 50, y: 50)))
             }
             .scaleEffect(scale)
+            Circle() // shadow
+                .trim(from: 0, to: angle / 360) // < ----- conversion is wrong!
+                .stroke(.green, lineWidth: 50)
+                .rotationEffect(.degrees(-230))
+                .mask {
+                    Indicators(progress: $currentValue, radius: circleWidth, id: UUID().uuidString, color: indicatorColor)
+                }
         }
         .frame(width: circleWidth, height: circleWidth)
         .gesture(DragGesture()
@@ -83,6 +96,7 @@ struct Volume: View {
     struct Indicators: View {
         @Binding var progress: CGFloat
         @State var radius: Double
+        var id: String
         var color: Color
         var font: UIFont = .systemFont(ofSize: 17)
         @State var letterWidths: [Int:Double] = [:]
@@ -114,7 +128,6 @@ struct Volume: View {
                     }
                     .rotationEffect(fetchAngle(at: index))
                 }
-                ProgressView(radius: $progress, color: color)
             }
             .frame(width: radius, height: radius)
             .rotationEffect(.degrees(-145))
@@ -141,40 +154,34 @@ struct Volume: View {
                 }
             }
         }
-        
-        struct ProgressView: View {
-            @Binding var radius: CGFloat
-            var color: Color
-            var width: CGFloat = 40
-            @Environment(\.colorScheme) private var colorScheme
-            var body: some View {
-                ZStack {
-                    Group {
-                        Circle()
-                            .trim(from: 0, to: radius / 360) // < ----- conversion is wrong!
-                            .stroke(color, lineWidth: width)
-                            .blur(radius: 10)
-                            .blendMode(colorScheme == .dark ? .colorDodge : .colorBurn)
-                            .animation(.spring(), value: radius)
-                        Circle()
-                            .trim(from: 0, to: radius / 360) // < ----- conversion is wrong!
-                            .stroke(color.opacity(0.1), lineWidth: width * 3)
-                            .blendMode(colorScheme == .dark ? .saturation : .colorBurn)
-                            .blur(radius: 50)
-                    }
-                    .rotationEffect(.degrees(-90))
-                    .animation(.spring(), value: radius)
+    }
+    
+    struct IndicatorsShadowView: View {
+        @Binding var radius: CGFloat
+        var color: Color
+        var width: CGFloat = 20
+        @Environment(\.colorScheme) private var colorScheme
+        var body: some View {
+            ZStack {
+                Group {
+                    Circle() // shadow
+                        .trim(from: 0, to: radius / 360) // < ----- conversion is wrong!
+                        .stroke(color.opacity(0.2), lineWidth: width)
+                        .blur(radius: 20)
                 }
+                .padding(10)
+                .rotationEffect(.degrees(130))
+                .animation(.spring(), value: radius)
             }
         }
     }
-        
+    
     struct MinMaxTexts: View {
         var minText: String = "Min"
         var maxText: String = "Max"
         var body: some View {
             VStack {
-              Spacer()
+                Spacer()
                 HStack {
                     Text(minText)
                     Spacer()
@@ -196,7 +203,7 @@ struct Volume: View {
             .init(color: .init(uiColor: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)), location: 0),
             .init(color: .init(uiColor: #colorLiteral(red: 0.8993311524, green: 0.9161464572, blue: 0.959358871, alpha: 1)), location: 1)
         ])
-
+        
         var body: some View {
             ZStack {
                 Circle()

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B6FA5912A7AA09200CD2DBF /* Parallax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B6FA5902A7AA09200CD2DBF /* Parallax.swift */; };
 		0B86EFE62A77A2BA00E6D298 /* VolumeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B86EFE52A77A2BA00E6D298 /* VolumeApp.swift */; };
 		0B86EFE82A77A2BA00E6D298 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B86EFE72A77A2BA00E6D298 /* ContentView.swift */; };
 		0B86EFEA2A77A2BB00E6D298 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B86EFE92A77A2BB00E6D298 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B6FA5902A7AA09200CD2DBF /* Parallax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parallax.swift; sourceTree = "<group>"; };
 		0B86EFE22A77A2BA00E6D298 /* Volume.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Volume.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B86EFE52A77A2BA00E6D298 /* VolumeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeApp.swift; sourceTree = "<group>"; };
 		0B86EFE72A77A2BA00E6D298 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				0B86EFF42A77F7C100E6D298 /* Extensions.swift */,
+				0B6FA5902A7AA09200CD2DBF /* Parallax.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -150,6 +153,7 @@
 			files = (
 				0B86EFE82A77A2BA00E6D298 /* ContentView.swift in Sources */,
 				0B86EFF52A77F7C100E6D298 /* Extensions.swift in Sources */,
+				0B6FA5912A7AA09200CD2DBF /* Parallax.swift in Sources */,
 				0B86EFE62A77A2BA00E6D298 /* VolumeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
